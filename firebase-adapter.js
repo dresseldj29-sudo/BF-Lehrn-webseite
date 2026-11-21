@@ -67,6 +67,10 @@
         try { const cred = await auth.signInWithEmailAndPassword(email, password); return { data: { user: publicUser(cred.user), session: { user: publicUser(cred.user) } }, error: null }; }
         catch (e) { return { data: { user: null, session: null }, error: makeError(e) }; }
       },
+      resetPasswordForEmail: async email => {
+        try { await auth.sendPasswordResetEmail(email); return { error: null }; }
+        catch (e) { return { error: makeError(e) }; }
+      },
       signOut: async () => { try { await auth.signOut(); return { error: null }; } catch (e) { return { error: makeError(e) }; } },
       getSession: async () => { try { const u = await new Promise((resolve, reject) => { let unsubscribe = null; unsubscribe = auth.onAuthStateChanged(value => { if (unsubscribe) unsubscribe(); resolve(value); }, error => { if (unsubscribe) unsubscribe(); reject(error); }); }); const normalized = publicUser(u); return { data: { session: normalized ? { user: normalized } : null }, error: null }; } catch (e) { return { data: { session: null }, error: makeError(e) }; } },
       onAuthStateChange: callback => {
