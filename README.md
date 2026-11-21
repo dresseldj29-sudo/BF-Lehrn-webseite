@@ -1,43 +1,48 @@
-# BF Lernakademie – Berufsfeuerwehr Training
+# BF Einstellungstest Trainer
 
-Eine responsive Lernplattform mit Lernmodulen, Quizfragen, persönlichem Lernfortschritt, Tagesziel und Lerngruppen.
+Eine responsive Lernplattform zur Vorbereitung auf den Einstellungstest der Berufsfeuerwehr in Deutschland.
 
-## Funktionen
-- E-Mail-Konto mit Anmeldung und Registrierung (Supabase Auth)
-- Fortschritt, Quiz-Ergebnisse und Lernziel werden online gespeichert
+## Lernbereiche
+- Deutsch: Rechtschreibung, Grammatik und Textverständnis
+- Mathematik: Grundrechenarten, Prozentrechnung, Dreisatz und Einheiten
+- Logik: Zahlenreihen, Analogien und Schlussfolgerungen
+- Technisches Verständnis: Hebel, Zahnräder, Kräfte und Mechanik
+- Allgemeinwissen
+- Konzentration und Merkfähigkeit
+- Räumliches Denken
+- Sporttest-Vorbereitung: Ausdauer, Kraft, Koordination und Schwimmen
+- Vorstellungsgespräch: Motivation, Teamfähigkeit und Berufsbild
+
+## Weitere Funktionen
+- Persönliches Konto und Anmeldung mit Supabase
+- Lernfortschritt und Trefferquote speichern
+- Tägliches Lernziel festlegen
 - Lerngruppen erstellen und per Raumcode beitreten
-- Lernmodule: Grundlagen, Brand- und Löschlehre, TH, Atemschutz/Sicherheit, Funk, Führung, Erste Hilfe, Recht/FwDV
-- Prüfungstraining mit gemischten Fragen und Feedback
-- Sammlung kostenloser Fachquellen
-- Gastmodus zum direkten Ausprobieren (Speicherung nur im aktuellen Browser)
+- Gemischte Prüfungssimulation
+- Feedback nach Themenbereichen
+- Verlinkte offizielle Informationen verschiedener Berufsfeuerwehren
 
-## Online-Speicherung aktivieren (kostenloser Supabase-Tarif)
-1. Unter https://supabase.com ein kostenloses Projekt erstellen.
-2. In Supabase unter **SQL Editor** die Datei `supabase/schema.sql` vollständig einfügen und ausführen.
-3. Unter **Project Settings → API** die **Project URL** und den **anon/public key** kopieren.
-4. In `config.js` eintragen:
-   - `SUPABASE_URL`: Project URL
-   - `SUPABASE_ANON_KEY`: anon/public key (niemals den service_role key verwenden!)
-5. GitHub Pages veröffentlichen: Repository → Settings → Pages → Deploy from a branch → main → /(root) → Save.
-6. Unter Supabase → Authentication → URL Configuration die veröffentlichte GitHub-Pages-Adresse als Site URL und Redirect URL eintragen.
-7. Registrieren und anmelden. Lernstand und Profil werden dann serverseitig gespeichert.
+## Wichtig: Einstellungstests unterscheiden sich
+Es gibt keinen einheitlichen Einstellungstest für alle Berufsfeuerwehren. Ablauf, Aufgaben, Sportdisziplinen und Mindestleistungen unterscheiden sich je nach Stadt, Laufbahn und Ausschreibung. Nutze die Übungen als allgemeine Vorbereitung und prüfe immer die offizielle Karriereseite deiner Wunsch-Berufsfeuerwehr.
 
-## Lokaler Test
-`index.html` im Browser öffnen. Ohne Supabase läuft die Plattform im Gastmodus. Online-Konten und echte gemeinsame Lerngruppen benötigen die Supabase-Konfiguration.
+## Kostenlose/offizielle Informationsquellen
+- Dortmund: https://www.dortmund.de/themen/sicherheit-und-ordnung/helfer-und-retter/berufsfeuerwehr/karriere/ausbildung-zum-zur-brandmeister-in/der-einstellungstest/
+- Flensburg: https://berufsfeuerwehr.flensburg.de/Karriere/Einstellungstest/Feuerwehr/
+- Nürnberg: https://www.nuernberg.de/internet/arbeitgeberin/einstellungstest.html
+- Bremen: https://www.feuerwehr.bremen.de/karriere/einstellungstest-20815
+- Stuttgart: https://feuerwehr.stuttgart.de/karriere/informationen-zur-bewerbung/
+- Deutsche Feuerwehr-Gewerkschaft: https://blog.dfeug.de/service/vorbereitung-einstellungstest/
 
-## Kostenlose Fachquellen
-- Feuerwehr-Lernbar Bayern: https://feuerwehr-lernbar.bayern.de/
-- Feuerwehr Wissen: https://feuerwehr-wissen-bb.de/
-- DFV-Übersicht Ausbildungsunterlagen: https://www.feuerwehrverband.de/app/uploads/2024/08/DFV-Uebersicht_Ausbildungsunterlagen_Internet_Aug_2024.pdf
-- LFV Schleswig-Holstein – Downloads: https://www.lfv-sh.de/der-landesverband/facharbeit/abteilung-1-einsatzvorbereitung-abwicklung
-- DFV direkt: https://www.feuerwehrverband.de/veranstaltungen/dfv-direkt/
-- Feuerwehr NRW – Arbeitshilfen: https://www.feuerwehr-nrw.de/service/arbeitshilfen/
+## Supabase einrichten
+1. Kostenloses Projekt unter https://supabase.com erstellen.
+2. `supabase/schema.sql` im SQL Editor ausführen.
+3. Project URL und anon/public key unter Project Settings → API kopieren.
+4. In `config.js` die Werte `SUPABASE_URL` und `SUPABASE_ANON_KEY` eintragen. Niemals den service_role key im Browser verwenden.
+5. GitHub Pages unter Repository → Settings → Pages aktivieren.
+6. Supabase Authentication → URL Configuration: veröffentlichte Website-Adresse als Site URL und Redirect URL eintragen.
+7. Registrieren und anmelden.
 
-## Wichtiger Hinweis
-Private Lernhilfe, keine offizielle Berufsfeuerwehr-Ausbildungsplattform. Fragen sind selbst erstellt und keine offiziellen Prüfungsfragen. Inhalte ersetzen weder Lehrgänge noch praktische Ausbildung, örtliche Dienstanweisungen oder gültige Vorschriften. Immer aktuelle landesrechtliche und dienstliche Vorgaben prüfen.
+Ohne Supabase läuft nur der lokale Gastmodus; Daten bleiben dann auf diesem Gerät im Browser.
 
-## Noch mögliche Ausbaustufen
-- Live-Gruppenchat und synchrones Gruppenquiz (Supabase Realtime)
-- Upload und Verwaltung eigener Unterrichtsmaterialien
-- Ausbilder-/Adminbereich und Kurszuweisung
-- Lernzeit-Auswertung mit Tages-/Wochenstatistik und Erinnerungen
+## Hinweis
+Die Fragen sind eigens erstellte Übungsaufgaben und keine Originalfragen einer Berufsfeuerwehr. Die Plattform ist keine offizielle Auswahlprüfung und garantiert kein Bestehen. Sporttraining langsam und gesundheitsgerecht aufbauen; bei gesundheitlichen Fragen ärztlichen Rat einholen.
