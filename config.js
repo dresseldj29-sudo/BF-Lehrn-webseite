@@ -1,6 +1,10 @@
-// Supabase-Konfiguration für die BF Lernakademie
-// Werte im Supabase-Dashboard unter Project Settings > API eintragen.
+// Firebase-Web-App-Konfiguration für die BF Lernplattform.
+// Die Werte findest du in Firebase Console > Projekteinstellungen > Allgemein > Deine Apps > SDK-Einrichtung.
 window.BF_CONFIG = {
-  SUPABASE_URL: "",
-  SUPABASE_ANON_KEY: ""
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
 };
