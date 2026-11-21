@@ -43,16 +43,36 @@ Die offizielle Nürnberger Seite nennt für Bewerbende ab 18 Jahren unter andere
 - **Offizielle Sporttest-Trainingsempfehlungen (PDF):** https://www.nuernberg.de/imperia/md/feuerwehr/dokumente/vorbereitung_sporttest.pdf
 - **Berufswege bei der Feuerwehr Nürnberg:** https://www.nuernberg.de/internet/feuerwehr/jobs_feuerwehr.html
 
-## Supabase und Veröffentlichung
-1. Kostenloses Projekt unter https://supabase.com erstellen.
-2. `supabase/schema.sql` im Supabase SQL Editor ausführen.
-3. Project URL und anon/public key unter Project Settings → API kopieren.
-4. Die Werte in `config.js` unter `SUPABASE_URL` und `SUPABASE_ANON_KEY` eintragen. Niemals den `service_role`-Key im Browser verwenden.
-5. GitHub Pages unter Repository → Settings → Pages aktivieren.
-6. In Supabase unter Authentication → URL Configuration die veröffentlichte Website-Adresse als Site URL und Redirect URL eintragen.
-7. Konto registrieren und anmelden.
+## Firebase und Veröffentlichung
 
-Ohne eingerichtetes Supabase läuft nur der lokale Gastmodus. Dann bleiben Daten ausschließlich in diesem Browser auf diesem Gerät. Gemeinsame Online-Lerngruppen benötigen ebenfalls Supabase.
+Die Lernplattform verwendet **Firebase Authentication** für Nutzerkonten und **Cloud Firestore** für Lernfortschritt, Profile und Lerngruppen.
+
+### 1. Firebase-Projekt erstellen
+1. Öffne https://console.firebase.google.com/ und erstelle ein Projekt.
+2. Öffne im Projekt das Zahnrad → **Projekteinstellungen** → **Allgemein**.
+3. Unter „Deine Apps“ auf das Web-Symbol `</>` klicken, eine Web-App registrieren und die angezeigte Firebase-Konfiguration kopieren.
+4. Trage die Werte in `config.js` ein: `apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId` und `appId`. Diese Web-Konfiguration ist für den Browser vorgesehen; niemals private Admin-/Service-Account-Schlüssel veröffentlichen.
+
+### 2. Anmeldung aktivieren
+1. Firebase Console → **Authentication** → **Jetzt starten**.
+2. Unter „Anmeldemethode“ **E-Mail/Passwort** aktivieren und speichern.
+3. Unter Authentication → Einstellungen → Autorisierte Domains die Railway-Domain `feuerwehr-pruefung-v1.up.railway.app` hinzufügen.
+
+### 3. Datenbank einrichten
+1. Firebase Console → **Firestore Database** → **Datenbank erstellen**.
+2. Für den Start einen geeigneten Standort auswählen.
+3. Öffne den Bereich **Regeln**.
+4. Ersetze die Regeln durch den vollständigen Inhalt aus `firestore.rules` und veröffentliche sie.
+
+Die Regeln schützen persönliche Profile, Lernfortschritte und Lernzeiten. Angemeldete Nutzer können Lerngruppen sehen und ihnen beitreten.
+
+### 4. Website verwenden
+1. Speichere die Firebase-Konfiguration in `config.js` und committe die Änderung in GitHub.
+2. Railway baut die Website nach dem GitHub-Commit automatisch neu.
+3. Öffne https://feuerwehr-pruefung-v1.up.railway.app und erstelle ein Konto.
+4. Melde dich auf einem zweiten Gerät mit demselben Konto an: dein Profil und Lernfortschritt werden aus Firestore geladen.
+
+Ohne ausgefüllte Firebase-Konfiguration startet weiterhin der lokale Gastmodus. Gastdaten bleiben nur im Browser und werden nicht zwischen Geräten synchronisiert.
 
 ## Hinweis
 Die Website ist ein privates Lernangebot und keine offizielle Website der Stadt Nürnberg. Die Fragen sind selbst erstellte Trainingsaufgaben. Inhalte ersetzen weder die offizielle Ausschreibung noch eine Feuerwehr-Ausbildung. Sporttraining langsam und gesundheitsgerecht aufbauen; bei gesundheitlichen Fragen ärztlichen Rat einholen.
