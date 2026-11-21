@@ -1,7 +1,7 @@
 // Kompatibilitaetsadapter: Die bestehende Lernplattform nutzt eine kleine Supabase-aehnliche API.
 // Authentifizierung und Daten laufen tatsaechlich ueber Firebase Authentication und Cloud Firestore.
 (function () {
-  if (!window.firebase || !window.BF_CONFIG) return;
+  if (!window.firebase || !window.BF_CONFIG || !window.BF_CONFIG.apiKey || !window.BF_CONFIG.authDomain || !window.BF_CONFIG.projectId) return;
   const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(window.BF_CONFIG);
   const auth = app.auth();
   const db = app.firestore();
