@@ -55,6 +55,16 @@ const bank=[
 ['sport','Was ist für die Vorbereitung auf einen 3.000-Meter-Lauf sinnvoll?',['Nur einmal pro Woche maximal sprinten','Ausdauer schrittweise und regelmäßig trainieren','Jeden Tag ohne Erholung bis zur Erschöpfung laufen','Lauftraining vollständig vermeiden'],1,'Regelmäßiges, angepasstes Ausdauertraining mit Erholung ist sinnvoll. Bei gesundheitlichen Fragen ärztlich beraten lassen.'],
 ['interview','Welche Antwort wirkt in einem Vorstellungsgespräch am überzeugendsten?',['„Ich möchte nur einen sicheren Arbeitsplatz.“','„Ich kenne die Anforderungen und möchte Verantwortung im Team übernehmen.“','„Ich möchte möglichst wenig Kontakt mit Menschen.“','„Schichtdienst kommt für mich nicht infrage.“'],1,'Eine überzeugende Antwort zeigt realistische Motivation, Teamorientierung und Kenntnis der Anforderungen.'],
 ['interview','Was ist bei der Frage nach eigenen Schwächen sinnvoll?',['Eine glaubwürdige Entwicklungsstelle nennen und erklären, wie du daran arbeitest.','Behaupten, keine Schwächen zu haben.','Eine andere Person verantwortlich machen.','Die Frage ignorieren.'],0,'Selbstreflexion und konkrete Verbesserungsmaßnahmen wirken glaubwürdiger als ausweichende Antworten.']
+,['mathe','Berechne 4,3 × 107.',['460,1','450,1','461','43,7'],0,'4,3 × 107 = 460,1.']
+,['mathe','Berechne 0,7565 : 0,00025.',['302,6','30,26','3.026','0,3026'],2,'Durch 0,00025 teilen entspricht mit 4.000 multiplizieren: 0,7565 × 4.000 = 3.026.']
+,['mathe','Ein Aufzug fährt 3,3 m pro Sekunde. Wie weit fährt er in einer Minute?',['33 m','99 m','198 m','330 m'],2,'3,3 m/s × 60 s = 198 m.']
+,['mathe','Ein Zylinder und ein Kegel haben gleiche Grundfläche und Höhe. Wie groß ist das Kegelvolumen im Vergleich zum Zylinder?',['Gleich groß','Doppelt so groß','Ein Drittel','Dreimal so groß'],2,'Das Volumen eines Kegels beträgt bei gleicher Grundfläche und Höhe ein Drittel des Zylindervolumens.']
+,['allgemein','An welchem Datum ist der Tag der Deutschen Einheit?',['1. Mai','3. Oktober','9. November','23. Mai'],1,'Der Tag der Deutschen Einheit ist am 3. Oktober.']
+,['allgemein','In welchem Jahr endete der Zweite Weltkrieg in Europa?',['1918','1933','1945','1949'],2,'Der Zweite Weltkrieg endete in Europa 1945.']
+,['allgemein','In welcher Stadt hat das Bundesverfassungsgericht seinen Sitz?',['Berlin','Bonn','Karlsruhe','München'],2,'Das Bundesverfassungsgericht hat seinen Sitz in Karlsruhe.']
+,['praxis','Womit lässt sich eine schwere Last bei gleicher Last am einfachsten bewegen?',['Mit einem längeren Hebelarm','Mit einem kürzeren Hebelarm','Mit weniger Abstand zum Drehpunkt auf der Kraftseite','Ohne Drehpunkt'],0,'Ein längerer Kraftarm verringert die notwendige Kraft.']
+,['praxis','Welche Tätigkeit nennt die Stadt Nürnberg als Beispiel für den praktischen Test?',['Lasten mittels Hebel bewegen','Steuererklärung ausfüllen','Musikinstrument stimmen','Fremdsprachenübersetzung'],0,'Die Stadt Nürnberg nennt unter anderem das Bewegen von Lasten mittels Hebel.']
+
 ];
 function toast(s){let n=document.createElement('div');n.className='toast';n.textContent=s;document.body.append(n);setTimeout(()=>n.remove(),3200)}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
