@@ -29,11 +29,14 @@
             let ref;
             if (this.table === "profiles" && row.id) ref = col.doc(String(row.id));
             else if (this.table === "room_members" && row.room_id && row.user_id) ref = col.doc(String(row.room_id) + "_" + String(row.user_id));
+            else if (this.table === "study_rooms" && row.id) ref = col.doc(String(row.id));
             else if (row.id && this.action === "upsert") ref = col.doc(String(row.id));
             else ref = col.doc();
-            if (this.action === "upsert") await ref.set(row, { merge: true });
-            else await ref.set({ ...row, id: row.id || ref.id });
-            saved.push({ ...row, id: row.id || ref.id });
+            const data = { ...row, id: row.id || ref.id };
+            if (this.table === "study_rooms" && !data.created_at) data.created_at = new Date().toISOString();
+            if (this.action === "upsert") await ref.set(data, { merge: true });
+            else await ref.set(data);
+            saved.push(data);
           }
           return result(Array.isArray(this.payload) ? saved : saved[0]);
         }
