@@ -117,8 +117,68 @@ async function openRoom(id){if(!sb)return toast('Gemeinsame Räume benötigen di
 function settings(){return '<div class="eyebrow">DEIN PROFIL</div><h1 class="h1">Einstellungen</h1><div class="grid"><div class="card span6"><div class="cardtitle">Persönliche Angaben</div><label>Anzeigename</label><input id="displayName" class="field" value="'+esc(profile.display_name||'')+'"><label>Dein tägliches Lernziel (Minuten)</label><input id="goal" class="field" type="number" min="5" max="480" value="'+(profile.daily_goal||30)+'"><button class="btn" id="saveSettings">Speichern</button></div><div class="card span6"><div class="cardtitle">Dein Konto</div><p class="muted">'+esc(user?.email||'Gastmodus')+'</p><div class="notice">'+(sb?'Dein Konto und Lernstand werden online gespeichert und sind nach erneuter Anmeldung verfügbar.':'Demo-Modus: Deine Daten bleiben nur in diesem Browser. Für dauerhaftes Speichern und gemeinsame Lerngruppen richte Firebase ein (Anleitung in README).')+'</div></div></div>'}
 function render(){if(page==='dashboard')frame(dashboard());if(page==='lernen')frame(learning());if(page==='pruefung')frame(exam());if(page==='fortschritt')frame(progressPage());if(page==='material')frame(materials());if(page==='einstellungen')frame(settings());if(page==='gruppen')groups().then(h=>{if(page==='gruppen'){frame(h);$('#createRoom').onclick=createRoom;$('#joinRoom').onclick=joinRoom}});if(page==='einstellungen'){$('#saveSettings').onclick=saveProfile}}
 async function logout(){if(sb)await sb.auth.signOut();user=null;authScreen()}
-function authScreen(){if(!ready){$('#root').innerHTML='<div class="authwrap"><div class="card auth"><div class="brand"><div class="brandmark">✚</div><div>BF EINSTELLUNGSTEST<small>BERUFSFEUERWEHR · TRAINING</small></div></div><div class="pill red">DEMO-MODUS</div><h1>Starte dein Training.</h1><p class="sub">Du kannst die Lernmodule direkt ausprobieren. Für dauerhaftes Konto, Synchronisierung und Lerngruppen müssen die kostenlosen Firebase-Zugangsdaten eingetragen werden. Die Anleitung liegt in README.md.</p><label>Dein Anzeigename</label><input id="guestName" class="field" placeholder="Dein Name" value="Feuerwehr-Azubi"><button class="btn" style="width:100%" id="guest">Als Gast starten →</button><p class="footer">Demo-Daten bleiben auf diesem Gerät in diesem Browser gespeichert.</p></div></div>';$('#guest').onclick=async()=>{profile={display_name:$('#guestName').value||'Feuerwehr-Azubi',daily_goal:30};user={email:'Gastmodus'};await loadData();render()};return}
-$('#root').innerHTML='<div class="authwrap"><div class="card auth"><div class="brand"><div class="brandmark">✚</div><div>BF EINSTELLUNGSTEST<small>BERUFSFEUERWEHR · TRAINING</small></div></div><h1>Willkommen zurück.</h1><p class="sub">Melde dich an oder erstelle dein persönliches Lernkonto.</p><div class="bar"><button class="btn secondary small" id="tabLogin">Anmelden</button><button class="btn ghost small" id="tabSignup">Konto erstellen</button></div><label>E-Mail-Adresse</label><input id="email" class="field" type="email" placeholder="name@beispiel.de"><label>Passwort</label><input id="password" class="field" type="password" placeholder="Mindestens 8 Zeichen"><div id="authMsg" class="muted" style="font-size:12px;margin:5px 0 12px"></div><button class="btn" id="authAction" style="width:100%">Anmelden</button></div></div>';let mode='login';const setMode=m=>{mode=m;$('#authAction').textContent=m==='login'?'Anmelden':'Konto erstellen';$('#tabLogin').className='btn '+(m==='login'?'secondary':'ghost')+' small';$('#tabSignup').className='btn '+(m==='signup'?'secondary':'ghost')+' small'};$('#tabLogin').onclick=()=>setMode('login');$('#tabSignup').onclick=()=>setMode('signup');$('#authAction').onclick=async()=>{let email=$('#email').value.trim(),password=$('#password').value;if(!email||password.length<8)return $('#authMsg').textContent='Bitte E-Mail und ein Passwort mit mindestens 8 Zeichen eingeben.';let r=mode==='signup'?await sb.auth.signUp({email,password}):await sb.auth.signInWithPassword({email,password});if(r.error)return $('#authMsg').textContent=r.error.message;if(mode==='signup'&&!r.data.session)return $('#authMsg').textContent='Bitte bestätige deine E-Mail-Adresse über den zugesandten Link.';user=r.data.user;await loadData();render()}}
+function authErrorMessage(error){
+ const code=error&&error.code||'';
+ const messages={
+  'auth/email-already-in-use':'Für diese E-Mail-Adresse existiert bereits ein Konto. Melde dich bitte an.',
+  'auth/invalid-email':'Die E-Mail-Adresse ist ungültig. Bitte prüfe deine Eingabe.',
+  'auth/weak-password':'Das Passwort ist zu schwach. Verwende mindestens 8 Zeichen.',
+  'auth/user-not-found':'Es wurde kein Konto mit dieser E-Mail-Adresse gefunden.',
+  'auth/wrong-password':'Das Passwort ist nicht richtig.',
+  'auth/invalid-credential':'E-Mail-Adresse oder Passwort stimmen nicht. Bitte prüfe deine Eingaben.',
+  'auth/user-disabled':'Dieses Konto wurde deaktiviert. Bitte wende dich an den Support.',
+  'auth/too-many-requests':'Zu viele Versuche. Bitte warte kurz und versuche es später erneut.',
+  'auth/network-request-failed':'Keine Verbindung zu Firebase. Prüfe deine Internetverbindung.',
+  'auth/operation-not-allowed':'Die Anmeldung mit E-Mail und Passwort ist in Firebase noch nicht aktiviert.',
+  'auth/unauthorized-domain':'Diese Website ist in Firebase nicht als autorisierte Domain eingetragen.',
+  'auth/api-key-not-valid.-please-pass-a-valid-api-key.':'Der Firebase-API-Schlüssel ist ungültig. Bitte prüfe config.js.'
+ };
+ return messages[code]||error?.message||'Unbekannter Anmeldefehler. Bitte versuche es erneut.';
+}
+function authScreen(){
+ if(!ready){
+  $('#root').innerHTML='<div class="authwrap"><div class="card auth"><div class="brand"><div class="brandmark">✚</div><div>BF EINSTELLUNGSTEST<small>BERUFSFEUERWEHR · TRAINING</small></div></div><div class="pill red">DEMO-MODUS</div><h1>Starte dein Training.</h1><p class="sub">Die Firebase-Verbindung ist noch nicht vollständig eingerichtet. Du kannst die Lernmodule im Gastmodus testen; für persönliche Konten muss die Firebase-Web-Konfiguration gültig sein.</p><label>Dein Anzeigename</label><input id="guestName" class="field" placeholder="Dein Name" value="Feuerwehr-Azubi"><button class="btn" style="width:100%" id="guest">Als Gast starten →</button><p class="footer">Gastdaten bleiben auf diesem Gerät in diesem Browser gespeichert.</p></div></div>';
+  $('#guest').onclick=async()=>{profile={display_name:$('#guestName').value||'Feuerwehr-Azubi',daily_goal:30};user={email:'Gastmodus'};await loadData();render()};
+  return;
+ }
+ $('#root').innerHTML='<div class="authwrap"><div class="card auth"><div class="brand"><div class="brandmark">✚</div><div>BF EINSTELLUNGSTEST<small>BERUFSFEUERWEHR · TRAINING</small></div></div><h1>Willkommen!</h1><p class="sub">Melde dich an oder erstelle dein persönliches Lernkonto. Dein Lernfortschritt wird deinem Konto zugeordnet.</p><div class="bar"><button class="btn secondary small" id="tabLogin">Anmelden</button><button class="btn ghost small" id="tabSignup">Konto erstellen</button></div><label for="email">E-Mail-Adresse</label><input id="email" class="field" type="email" autocomplete="email" placeholder="name@beispiel.de"><label for="password">Passwort</label><input id="password" class="field" type="password" autocomplete="current-password" placeholder="Mindestens 8 Zeichen"><div id="authMsg" class="muted" role="status" aria-live="polite" style="font-size:12px;margin:5px 0 12px;line-height:1.5"></div><button class="btn" id="authAction" style="width:100%">Anmelden</button><button class="btn ghost" id="resetPassword" style="width:100%;margin-top:10px">Passwort vergessen?</button></div></div>';
+ let mode='login',busy=false;
+ const setMode=m=>{
+  mode=m;
+  $('#authAction').textContent=m==='login'?'Anmelden':'Konto erstellen';
+  $('#password').autocomplete=m==='login'?'current-password':'new-password';
+  $('#tabLogin').className='btn '+(m==='login'?'secondary':'ghost')+' small';
+  $('#tabSignup').className='btn '+(m==='signup'?'secondary':'ghost')+' small';
+  $('#authMsg').textContent=m==='signup'?'Neues Konto: Verwende eine gültige E-Mail-Adresse und ein Passwort mit mindestens 8 Zeichen.':'Gib deine E-Mail-Adresse und dein Passwort ein.';
+ };
+ $('#tabLogin').onclick=()=>setMode('login');
+ $('#tabSignup').onclick=()=>setMode('signup');
+ $('#authAction').onclick=async()=>{
+  if(busy)return;
+  const email=$('#email').value.trim().toLowerCase(),password=$('#password').value;
+  if(!email||!/^\S+@\S+\.\S+$/.test(email)){ $('#authMsg').textContent='Bitte gib eine gültige E-Mail-Adresse ein.';return; }
+  if(password.length<8){ $('#authMsg').textContent='Bitte verwende ein Passwort mit mindestens 8 Zeichen.';return; }
+  busy=true;$('#authAction').disabled=true;$('#authAction').textContent=mode==='signup'?'Konto wird erstellt …':'Anmeldung läuft …';$('#authMsg').textContent='Bitte einen Moment warten …';
+  try{
+   const result=mode==='signup'?await sb.auth.signUp({email,password}):await sb.auth.signInWithPassword({email,password});
+   if(result.error){$('#authMsg').textContent=authErrorMessage(result.error);return;}
+   if(!result.data||!result.data.user){$('#authMsg').textContent='Firebase hat kein Benutzerkonto zurückgegeben. Bitte prüfe die Firebase-Einstellungen.';return;}
+   user=result.data.user;
+   await loadData();
+   render();
+  }catch(error){$('#authMsg').textContent=authErrorMessage(error);}
+  finally{busy=false;const action=$('#authAction');if(action){action.disabled=false;action.textContent=mode==='signup'?'Konto erstellen':'Anmelden';}}
+ };
+ $('#resetPassword').onclick=async()=>{
+  const email=$('#email').value.trim().toLowerCase();
+  if(!email||!/^\S+@\S+\.\S+$/.test(email)){ $('#authMsg').textContent='Trage zuerst oben deine gültige E-Mail-Adresse ein.';return; }
+  const button=$('#resetPassword');button.disabled=true;button.textContent='Wird gesendet …';
+  try{const result=await sb.auth.resetPasswordForEmail(email);$('#authMsg').textContent=result.error?authErrorMessage(result.error):'Wenn für diese Adresse ein Konto besteht, wurde eine E-Mail zum Zurücksetzen des Passworts versendet. Prüfe auch deinen Spam-Ordner.';}
+  catch(error){$('#authMsg').textContent=authErrorMessage(error);}
+  finally{button.disabled=false;button.textContent='Passwort vergessen?';}
+ };
+ setMode('login');
+}
 async function init(){if(!ready){authScreen();return}authScreen();let first=true;try{sb.auth.onAuthStateChange(async(_e,s)=>{try{if(first){first=false;if(s){user=s.user;await loadData();render()}else authScreen();return}if(s&&!user){user=s.user;await loadData();render()}else if(!s&&user){user=null;authScreen()}}catch(e){showStartupError(e)}})}catch(e){showStartupError(e)}}
 function showStartupError(error){const message=error?.message||String(error||'Unbekannter Fehler');$('#root').innerHTML='<div class="authwrap"><div class="card auth"><div class="brand"><div class="brandmark">✚</div><div>BF EINSTELLUNGSTEST<small>BERUFSFEUERWEHR · TRAINING</small></div></div><div class="pill red">FIREBASE-STARTFEHLER</div><h1>Die Lernplattform konnte nicht starten.</h1><p class="sub">Die Verbindung zu Firebase ist fehlgeschlagen. Prüfe, ob Cloud Firestore erstellt und die E-Mail/Passwort-Anmeldung aktiviert ist.</p><div class="notice danger" style="overflow-wrap:anywhere">'+esc(message)+'</div><p class="footer">Bitte kontrolliere außerdem, ob in Firebase die Web-App-Konfiguration zu diesem Projekt gehört und die Firestore-Regeln veröffentlicht sind.</p><button class="btn" style="width:100%" onclick="location.reload()">Erneut versuchen</button></div></div>'}
 window.pageNav=pageNav;window.startModule=startModule;window.openRoom=openRoom;init();
