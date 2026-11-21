@@ -8,6 +8,7 @@
 
   function result(data, error = null) { return { data, error }; }
   function makeError(e) { return { message: e && e.message ? e.message : String(e), code: e && e.code }; }
+  function publicUser(u) { return u ? { id: u.uid, uid: u.uid, email: u.email || "" } : null; }
 
   class Query {
     constructor(table) { this.table = table; this.action = "select"; this.payload = null; this.filters = []; this.sort = null; this.wantSingle = false; }
@@ -59,17 +60,17 @@
   const api = {
     auth: {
       signUp: async ({ email, password }) => {
-        try { const cred = await auth.createUserWithEmailAndPassword(email, password); return { data: { user: cred.user, session: cred.user ? { user: cred.user } : null }, error: null }; }
+        try { const cred = await auth.createUserWithEmailAndPassword(email, password); return { data: { user: publicUser(cred.user), session: cred.user ? { user: publicUser(cred.user) } : null }, error: null }; }
         catch (e) { return { data: { user: null, session: null }, error: makeError(e) }; }
       },
       signInWithPassword: async ({ email, password }) => {
-        try { const cred = await auth.signInWithEmailAndPassword(email, password); return { data: { user: cred.user, session: { user: cred.user } }, error: null }; }
+        try { const cred = await auth.signInWithEmailAndPassword(email, password); return { data: { user: publicUser(cred.user), session: { user: publicUser(cred.user) } }, error: null }; }
         catch (e) { return { data: { user: null, session: null }, error: makeError(e) }; }
       },
       signOut: async () => { try { await auth.signOut(); return { error: null }; } catch (e) { return { error: makeError(e) }; } },
-      getSession: async () => { try { const u = await new Promise((resolve, reject) => { let unsubscribe = null; unsubscribe = auth.onAuthStateChanged(value => { if (unsubscribe) unsubscribe(); resolve(value); }, error => { if (unsubscribe) unsubscribe(); reject(error); }); }); return { data: { session: u ? { user: u } : null }, error: null }; } catch (e) { return { data: { session: null }, error: makeError(e) }; } },
+      getSession: async () => { try { const u = await new Promise((resolve, reject) => { let unsubscribe = null; unsubscribe = auth.onAuthStateChanged(value => { if (unsubscribe) unsubscribe(); resolve(value); }, error => { if (unsubscribe) unsubscribe(); reject(error); }); }); const normalized = publicUser(u); return { data: { session: normalized ? { user: normalized } : null }, error: null }; } catch (e) { return { data: { session: null }, error: makeError(e) }; } },
       onAuthStateChange: callback => {
-        const unsubscribe = auth.onAuthStateChanged(u => callback(u ? "SIGNED_IN" : "SIGNED_OUT", u ? { user: u } : null));
+        const unsubscribe = auth.onAuthStateChanged(u => callback(u ? "SIGNED_IN" : "SIGNED_OUT", publicUser(u) ? { user: publicUser(u) } : null));
         return { data: { subscription: { unsubscribe } } };
       }
     },
