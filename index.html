@@ -15,7 +15,8 @@
 @media(max-width:480px){.span3,.span4{grid-column:span 12}.topright .useremail{display:none}.card{padding:16px}}
 </style></head>
 <body><div id="root"><div class="authwrap"><div class="card auth"><div class="brand"><div class="brandmark">✚</div><div>BF EINSTELLUNGSTEST TRAINER<small>BERUFSFEUERWEHR · AUSWAHLVERFAHREN</small></div></div><h1>Bereite dich auf deinen Einstellungstest vor.</h1><p class="sub">Dein Nürnberg-Trainer wird geladen …</p></div></div></div>
-<script src="config.js"></script><script src="firebase-adapter.js"></script><script>
+<script src="config.js"></script><script src="firebase-adapter.js"></script>
+<script src="extra-questions.js"></script><script>
 const CFG=window.BF_CONFIG||{};const ready=!!(CFG.apiKey&&CFG.authDomain&&CFG.projectId&&window.firebase&&window.BF_FIREBASE_ADAPTER);
 let sb=ready?window.BF_FIREBASE_ADAPTER.create(CFG):null;
 const $=s=>document.querySelector(s);let user=null,profile=null,progressRows=[],page='dashboard',questions=[],qIndex=0,score=0,selectedRoom=null,sessionStart=null;
