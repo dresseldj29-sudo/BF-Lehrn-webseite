@@ -30,11 +30,12 @@ Die offizielle Nürnberger Seite nennt für Bewerbende ab 18 Jahren unter andere
 Übungsschwerpunkte sind handwerkliches Geschick, Lasten mit Hebeln bewegen, Längen und Gewichte abschätzen, Werkstoffe mit geeignetem Werkzeug bearbeiten, einfache Erste-Hilfe-Situationen und Orientierung in engen/dunklen Räumen. Im Bewerbungsgespräch legt die Stadt nach eigener Beschreibung besonderen Wert auf Teamfähigkeit und Belastbarkeit. Eine gesundheitliche Prüfung gehört ebenfalls zum Auswahlverfahren.
 
 ## Weitere Funktionen
-- Supabase-Anmeldung und persönliches Konto
+- Firebase-Authentifizierung und persönliches Konto
 - Speicherung von Lernfortschritt und Trefferquote
 - tägliches Lernziel
 - Lerngruppen mit Raumcode
-- gemischte schriftliche Übungssimulation
+- gemischte schriftliche Übungssimulation und freies Mischtraining über alle Themen
+- zufällige Fragen- und Antwortreihenfolge; bereits beantwortete Fragen werden lokal und im gespeicherten Trainingsverlauf berücksichtigt
 - Feedback nach Themenbereichen
 - kostenlose und offizielle Informationslinks
 
