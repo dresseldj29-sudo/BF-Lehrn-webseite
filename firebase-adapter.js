@@ -67,7 +67,7 @@
         catch (e) { return { data: { user: null, session: null }, error: makeError(e) }; }
       },
       signOut: async () => { try { await auth.signOut(); return { error: null }; } catch (e) { return { error: makeError(e) }; } },
-      getSession: async () => { await auth.authStateReady(); const u = auth.currentUser; return { data: { session: u ? { user: u } : null }, error: null }; },
+      getSession: async () => { try { const u = await new Promise((resolve, reject) => { let unsubscribe = null; unsubscribe = auth.onAuthStateChanged(value => { if (unsubscribe) unsubscribe(); resolve(value); }, error => { if (unsubscribe) unsubscribe(); reject(error); }); }); return { data: { session: u ? { user: u } : null }, error: null }; } catch (e) { return { data: { session: null }, error: makeError(e) }; } },
       onAuthStateChange: callback => {
         const unsubscribe = auth.onAuthStateChanged(u => callback(u ? "SIGNED_IN" : "SIGNED_OUT", u ? { user: u } : null));
         return { data: { subscription: { unsubscribe } } };
